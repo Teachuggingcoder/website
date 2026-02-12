@@ -1,0 +1,1649 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The web site of the tea chugging coder</title>
+    <link href="/style.css" rel="stylesheet" type="text/css" media="all">
+    <style>
+      .updater {
+        font-size: 10px;
+        padding-left: 20%;
+
+      }
+      .updater li{
+      display: flex;
+      margin-top: 6px;
+      }
+
+      a {
+        font-size: 14px;
+        font-weight:bold;
+      }
+
+      .webmaster {
+        font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+        color: Orange;
+        font-size: 40px;
+      }
+
+      .meface img{
+        filter: blur(1.6px) contrast(200%);
+      }
+
+    </style>
+  </head>
+  <body>
+      <style>
+    /* webmeji */
+.webmeji-container {
+  position: fixed;
+  bottom: 0;
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+  z-index: 9999;
+}
+
+.webmeji-container img {
+  width: 100%;
+  height: auto;
+  user-select: none;
+  pointer-events: none;
+  display: block;
+  transform-origin: center;
+}
+
+@media (max-width: 768px) {
+  .webmeji-container {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+  </style>
+<script>
+
+  // ✰ webmeji ✰
+// little creatures that walk around your website =w=b
+// inspired by shimeji, originally by Lars de Rooij
+// not affiliated with any other shimeji projects
+// last updated: 27 january 2026
+// homepage: webmeji.neocities.org
+//
+// this file defines:
+// - which webmeji spawn
+// - which actions are allowed
+// - what animations they have
+// - how often actions occur
+
+// spawning setup --------------------------------------------------
+// define which creatures spawn on the page. remove any unwanted ones.
+// each id must be unique
+// if two of them overlap and pet and dragging interactions happen, only the one stated here last will get interacted with
+window.SPAWNING = [
+  { id: 'webmeji-0', config: 'SHIMEJI_CONFIG' },
+  { id: 'webmeji-1', config: 'MIKU_CONFIG' },
+  { id: 'webmeji-2', config: 'MIKU_CONFIG' }
+];
+
+// base shimeji config ----------------------------------------------
+// all configs should have same actions, but allowances can differ
+window.SHIMEJI_CONFIG = {
+  // pet   = hover animation (hard to see on mobile)
+  // drag  = click or touch to pick up
+  // top / left / right allow edge interactions
+  // remove whichever you don't want, the only exceptions is that bottom must always be enabled
+  ALLOWANCES: ['pet', 'drag', 'bottom', 'top', 'left', 'right'],
+
+  // movement and physics -------------------------------------------
+  // values are pixels movements per frame
+  walkspeed: 50,
+  fallspeed: 200,
+  jumpspeed: 150,
+
+  // time in ms before standing back up after falling
+  gettingupspeed: 2000,
+
+  // common idle and movement animations on the bottom edge ---------
+  // these are the most frequently used actions
+  // interval = time between frames (ms)
+  // loops = how many times the frame sequence repeats
+  // randomizeDuration sets random timeframe for actions, tune min and max to desired length
+  walk: {
+    frames: ["shimeji/shime1.png", "shimeji/shime2.png", "shimeji/shime3.png", "shimeji/shime2.png"],
+    interval: 175, loops: 6},
+
+  stand: {
+    frames: ["shimeji/shime1.png"],
+    interval: 200, loops: 1},
+
+  sit: {
+    frames: ["shimeji/shime11.png"],
+    interval: 1000, loops: 1,
+    randomizeDuration: true, min: 3000, max: 11000},
+
+  spin: {
+    frames: ["shimeji/shime1.png"],
+    interval: 150, loops: 3},
+
+  dance: {
+    frames: ["shimeji/shime5.png", "shimeji/shime6.png", "shimeji/shime1.png"],
+    interval: 200, loops: 5},
+
+  trip: {
+    frames: ["shimeji/shime20.png", "shimeji/shime21.png", "shimeji/shime21.png", "shimeji/shime20.png", "shimeji/shime21.png", "shimeji/shime21.png"],
+    interval: 250, loops: 1},
+
+  // behavior flow control ------------------------------------------
+  // prevents awkward transitions like dancing immediately after sitting
+  forcewalk: { // uses the walking frames, by default happens after tripping and spinning
+    loops: 6},
+
+  forcethink: { // by default happens after dancing
+    frames: ["shimeji/shime27.png", "shimeji/shime28.png"],
+    interval: 500, loops: 2},
+
+  // user interaction animations ------------------------------------
+  pet: {
+    frames: ["shimeji/shime15.png", "shimeji/shime16.png", "shimeji/shime17.png"],
+    interval: 75},
+
+  drag: {
+    frames: ["shimeji/shime5.png", "shimeji/shime7.png", "shimeji/shime5.png", "shimeji/shime6.png", "shimeji/shime8.png", "shimeji/shime6.png"],
+    interval: 210},
+
+  // falling and recovery animations --------------------------------
+  falling: {
+    frames: ["shimeji/shime4.png"],
+    interval: 200, loops: 2},
+
+  fallen: {
+    frames: ["shimeji/shime19.png", "shimeji/shime18.png"],
+    interval: 250, loops: 1},
+
+  // action frequency and decision logic ----------------------------
+  // anytime an action needs to be chosen, it randomly picks one of these
+  // thus, having an action in here more than others, makes it happen more
+  ORIGINAL_ACTIONS: [
+    'walk','walk','walk','walk','walk','walk',
+    'walk','walk','walk','walk','walk','walk',
+    'spin','spin','spin',
+    'sit','sit',
+    'dance','dance',
+    'trip'
+  ],
+
+  EDGE_ACTIONS: [
+    'hang','hang',
+    'climb','climb','climb','climb',
+    'fall','fall'
+  ],
+
+  // when chosing an action on the bottom, it has this change to jump to an edge (if allowed)
+  // this is standalone from the other action select
+  JUMP_CHANCE: 0.05, // below 0 = never jump; above 1 = jump almost always
+
+  // edge-specific animations ---------------------------------------
+  climbSide: {
+    frames: ["shimeji/shime13.png", "shimeji/shime14.png"],
+    interval: 200, loops: 2},
+
+  hangstillSide: {
+    frames: ["shimeji/shime12.png"],
+    interval: 200, loops: 2,
+    randomizeDuration: true, min: 3000, max: 11000},
+
+  climbTop: {
+    frames: ["shimeji/shime24.png", "shimeji/shime25.png"],
+    interval: 200, loops: 6},
+
+  hangstillTop: {
+    frames: ["shimeji/shime23.png"],
+    interval: 200, loops: 2,
+    randomizeDuration: true, min: 3000, max: 11000},
+
+  jump: {
+    frames: ["shimeji/shime22.png"],
+    interval: 200}
+};
+
+
+// second config ----------------------------------------------------
+
+window.MIKU_CONFIG = {
+  // pet   = hover animation (hard to see on mobile)
+  // drag  = click or touch to pick up
+  // top / left / right allow edge interactions
+  // remove whichever you don't want, the only exceptions is that bottom must always be enabled
+  ALLOWANCES: ['pet', 'drag', 'bottom', 'top', 'left', 'right'],
+
+  // movement and physics -------------------------------------------
+  // values are pixels movements per frame
+  walkspeed: 50,
+  fallspeed: 150,
+  jumpspeed: 200,
+
+  // time in ms before standing back up after falling
+  gettingupspeed: 3500,
+
+  // common idle and movement animations on the bottom edge ---------
+  // these are the most frequently used actions
+  // interval = time between frames (ms)
+  // loops = how many times the frame sequence repeats
+  // randomizeDuration sets random timeframe for actions, tune min and max to desired length
+  walk: {
+    frames: ["miku/shime1.png", "miku/shime2.png", "miku/shime3.png", "miku/shime2.png"], 
+    interval: 175, loops: 6},
+
+  stand: {
+    frames: ["miku/shime1.png"], 
+    interval: 1000, loops: 1},
+
+  sit: {
+    frames: ["miku/shime11.png"], 
+    interval: 1000, loops: 1,
+    randomizeDuration: true, min: 3000, max: 11000},
+
+  spin: {
+    frames: ["miku/shime1.png"], 
+    interval: 150, loops: 3},
+
+  dance: {
+    frames: ["miku/shime5.png", "miku/shime6.png", "miku/shime1.png"], 
+    interval: 200, loops: 2},
+
+  trip: {
+    frames: ["miku/shime18.png", "miku/shime19.png", "miku/shime19.png"], 
+    interval: 250, loops: 1},
+
+  // behavior flow control ------------------------------------------
+  // prevents awkward transitions like dancing immediately after sitting
+  forcewalk: { // uses the walking frames
+    loops: 6},
+
+  forcethink: {
+    frames: ["miku/shime27.png", "miku/shime28.png"], 
+    interval: 500, loops: 2},
+
+  // user interaction animations ------------------------------------
+  pet: {
+    frames: ["miku/shime15.png", "miku/shime16.png", "miku/shime17.png"], 
+    interval: 400},
+
+  drag: {
+    frames: ["miku/shime7.png", "miku/shime5.png", "miku/shime8.png", "miku/shime6.png"], 
+    interval: 210},
+
+  // falling and recovery animations --------------------------------
+  falling: {
+    frames: ["miku/shime10.png", "miku/shime18.png"], 
+    interval: 200, loops: 2},
+
+  fallen: {
+    frames: ["miku/shime9.png", "miku/shime4.png", "miku/shime19.png"], 
+    interval: 250, loops: 1},
+
+  // action frequency and decision logic ----------------------------
+  // anytime an action needs to be chosen, it randomly picks one of these
+  // thus, having an action in here more than others, makes it happen more
+  ORIGINAL_ACTIONS: [
+    'walk','walk','walk','walk','walk','walk',
+    'spin','spin','spin',
+    'sit','sit',
+    'dance','dance','dance','dance','dance',
+    'trip'
+  ],
+
+  EDGE_ACTIONS: [
+    'hang','hang',
+    'climb','climb','climb','climb','climb',
+    'fall'
+  ],
+
+  // when chosing an action on the bottom, it has this change to jump to an edge (if allowed)
+  // this is standalone from the other action select
+  JUMP_CHANCE: 0.1, // below 0 = never jump; above 1 = jump almost always
+
+  // edge-specific animations ---------------------------------------
+  climbSide: {
+    frames: ["miku/shime13.png", "miku/shime14.png"], 
+    interval: 200, loops: 2},
+
+  hangstillSide: {
+    frames: ["miku/shime12.png"], 
+    interval: 200, loops: 2,
+    randomizeDuration: true, min: 3000, max: 11000},
+
+  climbTop: {
+    frames: ["miku/shime24.png", "miku/shime25.png"], 
+    interval: 200, loops: 8},
+
+  hangstillTop: {
+    frames: ["miku/shime23.png"], 
+    interval: 200, loops: 2,
+    randomizeDuration: true, min: 3000, max: 11000},
+
+  jump: {
+    frames: ["miku/shime22.png"], 
+    interval: 200}
+};
+</script>
+<script>
+  // ✰ webmeji ✰
+// little creatures that walk around your website =w=b
+// inspired by shimeji, put together by Lars de Rooij
+// not affiliated with any other shimeji projects
+// last updated: 27 january 2026
+// homepage: webmeji.neocities.org
+
+// this is likely very unoptimized and quite messy code, i apologize for that. plain info on each function is at the bottom of the readme
+// this project was made with the intention that changing anything in the config.js would be easy. this is not that. modifying this comes at your own risk.
+
+window.addEventListener('DOMContentLoaded', () => {
+  // collect unique config names from SPAWNING
+  const configNames = [...new Set(
+    window.SPAWNING.map(spawn => spawn.config)
+  )];
+
+  // resolve them to actual config objects on window
+  const configs = configNames
+    .map(name => window[name])
+    .filter(Boolean);
+
+  // preload all images
+  Promise.all(configs.map(preloadImages))
+    .then(() => {
+      console.log("all images are loaded!");
+
+      const creatures = [];
+      window.SPAWNING.forEach(({ id, config }) => {
+        const cfg = window[config];
+        if (!cfg) {
+          console.warn(`config not found: ${config}`);
+          return;
+        }
+        creatures.push(new Creature(id, cfg));
+      });
+    })
+    .catch(error => {
+      console.error("error loading images:", error);
+    });
+});
+
+
+// preloads all frames from a given configuration
+function preloadImages(config) {
+  // collect all frames from every action in the config
+  const imagePaths = Object.values(config)
+    .flatMap(item => (item.frames && Array.isArray(item.frames)) ? item.frames : []);
+
+  // return a promise that resolves when all images are loaded
+  return Promise.all(imagePaths.map(src => new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = resolve;  // resolve when image loads
+    img.onerror = reject;  // reject if error occurs
+    img.src = src;
+  })));
+}
+
+// creature class -------------------------------------------------------
+class Creature {
+  constructor(containerId, spriteConfig) {
+    this.currentEdge = 'bottom';
+
+    // create div to hold the sprite image
+    this.container = document.createElement('div');
+    this.container.className = 'webmeji-container';
+    document.body.appendChild(this.container);
+
+    // create img element for first frame of sprite
+    this.img = document.createElement('img');
+    this.img.id = containerId;
+    this.img.src = spriteConfig.walk.frames[0]; // default to first walk frame
+    this.container.appendChild(this.img);
+
+    // store sprite configuration & randomize action sequence
+    this.spriteConfig = spriteConfig;
+    this.actionSequence = this.shuffle([...this.spriteConfig.ORIGINAL_ACTIONS]);
+    this.currentActionIndex = 0;
+    this.currentAction = null;
+    this.frameTimer = null;          // interval for frame updates
+    this.dragFrameTimer = null;      // interval for drag animation
+    this.actionCompletionTimer = null; // timer for completing actions
+    this.currentFrame = 0;
+    this.direction = 1;              // movement direction, 1 = right, -1 = left
+    this.facing = 'left';            // visual facing direction of base sprites
+
+    // starting states
+    this.isDragging = false;
+    this.isFalling = false;
+    this.isPetting = false;
+    this.isJumping = false;
+    this.tripAfterFallActive = false;
+    this.wasActionBeforePet = null; 
+
+    // pointer / drag detection
+    this.isPointerDown = false;
+    window.addEventListener('mousedown', () => { this.isPointerDown = true; });
+    window.addEventListener('mouseup', () => { this.isPointerDown = false; });
+    window.addEventListener('touchstart', () => { this.isPointerDown = true; }, { passive: true });
+    window.addEventListener('touchend', () => { this.isPointerDown = false; });
+
+    // get container size
+    const containerStyle = window.getComputedStyle(this.container);
+    this.containerWidth = parseFloat(containerStyle.width);
+    this.containerHeight = parseFloat(containerStyle.height);
+
+    // spawn at random bottom position
+    this.positionX = Math.random() * (window.innerWidth - this.containerWidth);
+    this.positionY = window.innerHeight - this.containerHeight;
+
+    this.container.style.left = `${this.positionX}px`;
+    this.container.style.top = `${this.positionY}px`;
+
+    this.maxPos = window.innerWidth - this.containerWidth; // max horizontal position
+    this.forceWalkAfter = false; // flag for forcing walk after some actions
+    this.forceThinkAfter = false;
+
+    this.container.style.left = `${this.positionX}px`;
+    this.container.style.top = 'auto'; // reset top for CSS positioning
+    this.baseBottom = 0; // reference for bottom alignment
+
+    this.updateImageDirection(); // set initial facing
+
+    // start first action
+    this.currentAction = this.actionSequence[this.currentActionIndex];
+    this.startAction(this.currentAction);
+
+    // bind animate to this object
+    this.animate = this.animate.bind(this);
+    this.animationFrameId = requestAnimationFrame(this.animate);
+
+    // handle window resize to adjust max positions
+    this.resizeHandler = () => {
+      const style = window.getComputedStyle(this.container);
+      this.containerWidth = parseFloat(style.width);
+      this.containerHeight = parseFloat(style.height);
+      this.maxPos = window.innerWidth - this.containerWidth;
+      this.positionX = Math.min(this.positionX, this.maxPos);
+      this.container.style.left = `${this.positionX}px`;
+    };
+    window.addEventListener('resize', this.resizeHandler);
+
+    // enable mouse hover and drag interactions
+    this.enablePetInteraction();
+    this.enableDragInteraction();
+  }
+
+  // shuffle array for random action order
+  shuffle(array) {
+    for (let i=array.length-1; i>0; i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [array[i],array[j]] = [array[j],array[i]]; // swap elements
+    }
+    return array;
+  }
+
+  // flip sprite horizontally depending on facing
+  updateImageDirection() {
+    this.img.style.transform = this.facing === 'left' ? 'scaleX(1)' : 'scaleX(-1)';
+  }
+
+  // update facing from horizontal delta (dx)
+  setFacingFromDelta(dx) {
+    if (dx && !this.isDragging) {
+        this.facing = dx < 0 ? 'left' : 'right';
+        this.updateImageDirection();
+    }
+  }
+
+  // stop current animation timers
+  resetAnimation() {
+    clearInterval(this.frameTimer);
+    clearTimeout(this.actionCompletionTimer);
+    this.currentFrame = 0;
+    this.frameTimer = null;
+    this.actionCompletionTimer = null;
+  }
+
+  // cancel all timers and animation frames
+  clearAllTimers() {
+    this.resetAnimation();
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+    }
+  }
+
+  // check if edge is left/right
+  isSideEdge(edge) { return edge === 'left' || edge === 'right'; }
+  // check if edge is anything except bottom
+  isNonBottomEdge(edge) { return edge !== 'bottom'; }
+
+  // update container class for current edge
+  updateEdgeClass() {
+      this.container.classList.remove('edge-left','edge-right','edge-top');
+      if (!this.isDragging) {
+          this.currentEdge === 'left' && this.container.classList.add('edge-left');
+          this.currentEdge === 'right' && this.container.classList.add('edge-right');
+          this.currentEdge === 'top' && this.container.classList.add('edge-top');
+      }
+      this.applyEdgeOffset(); // adjust position based on edge
+  }
+
+  // apply offsets when at edge to align sprite properly
+  applyEdgeOffset() {
+      if (this.isDragging) return this.container.style.cssText = `left:${this.positionX}px;top:${this.positionY}px`;
+
+      const offsetX = this.currentEdge === 'left' ? -this.containerWidth/2 :
+                      this.currentEdge === 'right' ? this.containerHeight/2 : 0;
+      const offsetY = this.currentEdge === 'top' ? -this.containerHeight/2 : 0;
+
+      this.container.style.left = `${(this.positionX||0)+offsetX}px`;
+      this.container.style.top  = `${(this.positionY||0)+offsetY}px`;
+  }
+
+  // jump to another edge (top, left, right)
+  jumpToEdge(targetEdge) {
+    if (this.isFalling || this.isPetting || this.isDragging || this.isJumping) return; // ignore if busy
+    if (!this.spriteConfig.ALLOWANCES.includes(targetEdge)) return; // edge not allowed
+
+    this.isJumping = true;
+    this.resetAnimation();
+
+    const jumpConfig = this.spriteConfig.jump;
+    if (!jumpConfig) { this.isJumping = false; return; }
+
+    const startX = this.positionX;
+    const startY = this.positionY;
+    let endX = startX;
+    let endY = startY;
+
+    switch (targetEdge) {
+        case 'top':
+            endY = 0;
+            endX = Math.random() * (window.innerWidth - this.containerWidth); // random horizontal
+            break;
+        case 'left':
+            endX = 0;
+            endY = Math.random() * (window.innerHeight - this.containerHeight); // random vertical
+            break;
+        case 'right':
+            endX = window.innerWidth - this.containerWidth;
+            endY = Math.random() * (window.innerHeight - this.containerHeight); // random vertical
+            break;
+    }
+
+    const dx = endX - startX;
+    const dy = endY - startY;
+    const distance = Math.hypot(dx, dy); // calculate distance for speed
+
+    if (distance === 0) { this.isJumping = false; return; }
+
+    const duration = distance / this.spriteConfig.jumpspeed; // time to reach
+    const startTime = performance.now();
+
+    // setup frame animation for jump
+    let frameIndex = 0;
+    const totalFrames = jumpConfig.frames.length;
+    this.img.src = jumpConfig.frames[frameIndex];
+
+    const frameTimer = setInterval(() => {
+        frameIndex = (frameIndex + 1) % totalFrames;
+        this.img.src = jumpConfig.frames[frameIndex];
+    }, jumpConfig.interval);
+
+    // animation loop for jump movement
+    const step = (time) => {
+        if (this.isDragging) {
+            clearInterval(frameTimer); 
+            this.isJumping = false;    
+            return;                    
+        }
+
+        const elapsed = (time - startTime) / 1000;
+        const t = Math.min(elapsed / duration, 1); // progress 0-1
+
+        this.positionX = startX + dx * t;
+        this.positionY = startY + dy * t;
+
+        if (dx !== 0) this.setFacingFromDelta(dx);
+
+        this.container.style.left = `${this.positionX}px`;
+        this.container.style.top = `${this.positionY}px`;
+
+        if (t < 1) {
+            requestAnimationFrame(step);
+        } else {
+            clearInterval(frameTimer); 
+            this.isJumping = false;
+            this.currentEdge = targetEdge;
+            this.updateEdgeClass();
+            this.startEdgeIdle(); // start idle after landing
+        }
+    };
+    requestAnimationFrame(step);
+  }
+
+  // start idle animation on edge
+  startEdgeIdle() {
+    this.updateEdgeClass();
+    if (this.currentEdge === 'top') this.startAction('hangstillTop');
+    else if (this.isSideEdge(this.currentEdge)) this.startAction('hangstillSide');
+  }
+
+  // pick random edge action: hang, climb, fall
+  edgeAction() {
+    if(this.isJumping||this.isFalling) return;
+    const choice=this.spriteConfig.EDGE_ACTIONS[Math.floor(Math.random()*this.spriteConfig.EDGE_ACTIONS.length)];
+    choice==='hang'?this.startEdgeIdle():
+    choice==='climb'?this.startAction(this.currentEdge==='top'?'climbTop':'climbSide'):
+    choice==='fall'&&this.fallToBottom();
+  }
+
+  // user interactions ---------------------------------------------------
+  // petting animation when hovering
+  enablePetInteraction() {
+    if(!this.spriteConfig.ALLOWANCES?.includes('pet') || !this.spriteConfig.ALLOWANCES?.includes('bottom')) return;
+
+    this.container.addEventListener('mouseenter',()=> {
+        if(this.isFalling||this.isPointerDown||this.isPetting||this.isJumping||this.currentEdge!=='bottom') return;
+        this.isPetting=true;
+        this.wasActionBeforePet=this.currentAction;
+        this.startPetAnimation();
+    });
+    this.container.addEventListener('mouseleave',()=> {
+        if(this.isFalling||this.isPointerDown||this.isJumping||this.currentEdge==='top') return;
+        this.isPetting=false;
+        this.stopPetAnimation();
+    });
+  }
+
+  // dragging animation and pointer tracking
+  enableDragInteraction() {
+    if (!this.spriteConfig.ALLOWANCES?.includes('drag')) return;
+    if (!this.spriteConfig.ALLOWANCES?.includes('bottom')) return;
+
+    let offsetX = 0;
+    let offsetY = 0;
+
+    const onPointerMove = (e) => {
+        e.preventDefault();
+        
+        let clientX = e.clientX ?? e.touches?.[0].clientX;
+        let clientY = e.clientY ?? e.touches?.[0].clientY;
+
+        this.positionX = clientX - offsetX;
+        this.positionY = clientY - offsetY;
+
+        // clamp position to window
+        this.positionX = Math.max(0, Math.min(this.positionX, window.innerWidth - this.containerWidth));
+        this.positionY = Math.max(0, Math.min(this.positionY, window.innerHeight - this.containerHeight));
+
+        this.container.style.left = this.positionX + 'px';
+        this.container.style.top  = this.positionY + 'px';
+    };
+
+    const onPointerUp = () => {
+        window.removeEventListener('mousemove', onPointerMove);
+        window.removeEventListener('touchmove', onPointerMove);
+        window.removeEventListener('mouseup', onPointerUp);
+        window.removeEventListener('touchend', onPointerUp);
+
+        this.isDragging = false;
+        this.isFalling = false;
+
+        this.resetAnimation();
+        this.fallToBottom();
+
+        this.animationFrameId = requestAnimationFrame(this.animate);
+    };
+
+    // listen to pointer down to start drag
+    this.container.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        this.startDrag(e.clientX, e.clientY);
+    });
+
+    this.container.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        this.startDrag(touch.clientX, touch.clientY);
+    });
+
+    // actual drag logic
+    this.startDrag = (clientX, clientY) => {
+    this.resetAnimation();
+
+    if (this.animationFrameId) {
+        cancelAnimationFrame(this.animationFrameId);
+        this.animationFrameId = null;
+    }
+
+    this.isDragging = true;
+    this.tripAfterFallActive = false;
+    this.isJumping = false;
+    this.isFalling = false;
+    this.isPetting = false;
+
+    this.currentAction = 'drag';
+    this.img.style.transform = this.facing === 'left' ? 'scaleX(1)' : 'scaleX(-1)';
+
+    if (this.dragFrameTimer) clearInterval(this.dragFrameTimer);
+
+    const dragConfig = this.spriteConfig.drag;
+    if (dragConfig?.frames?.length) {
+        let frame = 0;
+        this.img.src = dragConfig.frames[0];
+
+        this.dragFrameTimer = setInterval(() => {
+            frame = (frame + 1) % dragConfig.frames.length;
+            this.img.src = dragConfig.frames[frame];
+        }, dragConfig.interval);
+    }
+
+    const rect = this.container.getBoundingClientRect();
+    let offsetX = clientX - rect.left;  // remember grab offset
+    let offsetY = clientY - rect.top;
+
+    const onPointerMove = (e) => {
+        e.preventDefault();
+        
+        let clientX = e.clientX ?? e.touches?.[0].clientX;
+        let clientY = e.clientY ?? e.touches?.[0].clientY;
+
+        this.positionX = clientX - offsetX;
+        this.positionY = clientY - offsetY;
+
+        // clamp to window
+        this.positionX = Math.max(0, Math.min(this.positionX, window.innerWidth - this.containerWidth));
+        this.positionY = Math.max(0, Math.min(this.positionY, window.innerHeight - this.containerHeight));
+
+        this.container.style.left = this.positionX + 'px';
+        this.container.style.top  = this.positionY + 'px';
+    };
+
+    const onPointerUp = () => {
+        window.removeEventListener('mousemove', onPointerMove);
+        window.removeEventListener('touchmove', onPointerMove);
+        window.removeEventListener('mouseup', onPointerUp);
+        window.removeEventListener('touchend', onPointerUp);
+
+        this.isDragging = false;
+        this.isFalling = false;
+
+        // stop drag animation
+        if (this.dragFrameTimer) {
+            clearInterval(this.dragFrameTimer);
+            this.dragFrameTimer = null;
+        }
+
+        this.resetAnimation();
+        this.fallToBottom(); // return to bottom after drag
+
+        this.animationFrameId = requestAnimationFrame(this.animate);
+    };
+
+    window.addEventListener('mousemove', onPointerMove);
+    window.addEventListener('touchmove', onPointerMove, { passive: false });
+    window.addEventListener('mouseup', onPointerUp);
+    window.addEventListener('touchend', onPointerUp);
+  };
+  }
+
+  // falling and recovery -------------------------------------------------
+  // animate falling to bottom
+  fallToBottom(fallSpeed=this.spriteConfig.fallspeed){
+    if(this.isFalling) return;
+    this.tripAfterFallActive = false;
+    this.isFalling = true;
+    this.currentEdge='bottom';
+    this.updateEdgeClass();
+    this.resetAnimation();
+
+    const cfg=this.spriteConfig.falling; if(!cfg) return;
+
+    let frameIndex=0;
+    this.img.src=cfg.frames[0];
+    this.frameTimer=setInterval(()=>{ 
+      frameIndex=(frameIndex+1)%cfg.frames.length; 
+      this.img.src=cfg.frames[frameIndex]; 
+      }, cfg.interval);
+
+    const startY=this.positionY, endY=window.innerHeight-this.containerHeight, distance=endY-startY;
+    if(distance<=0){ clearInterval(this.frameTimer); 
+      this.frameTimer=null; this.positionY=endY; 
+      this.container.style.top=`${endY}px`; 
+      return this.playTripAfterFall(); 
+    }
+
+    const startTime=performance.now();
+    const step = (time) => {
+      if (this.isDragging) {
+          clearInterval(this.frameTimer);
+          this.frameTimer = null;
+          return this.animationFrameId = requestAnimationFrame(this.animate);
+      }
+
+      const elapsed = (time - startTime) / 1000;
+      const deltaY = fallSpeed * elapsed;
+      this.positionY = Math.min(startY + deltaY, endY); 
+      this.container.style.top = `${this.positionY}px`;
+
+      if (this.positionY < endY) {
+          requestAnimationFrame(step);
+      } else {
+          clearInterval(this.frameTimer);
+          this.frameTimer = null;
+          this.positionY = endY;
+          this.container.style.top = `${endY}px`;
+          this.playTripAfterFall();
+      }
+    };
+    requestAnimationFrame(step);
+  }
+
+  // play fallen/trip animation after landing
+  playTripAfterFall() {
+    const tripConfig = this.spriteConfig.fallen;
+    if (!tripConfig) {
+        this.resumeAfterFallen();
+        return;
+    }
+
+    this.tripAfterFallActive = true;
+    let frame = 0;
+    const totalFrames = tripConfig.frames.length;
+    this.img.src = tripConfig.frames[0];
+
+    const frameTimer = setInterval(() => {
+        frame++;
+
+        if (frame >= totalFrames) {
+            clearInterval(frameTimer);
+            this.img.src = tripConfig.frames[totalFrames - 1];
+
+            setTimeout(() => {
+                if (this.tripAfterFallActive) this.resumeAfterFallen();
+            }, this.spriteConfig.gettingupspeed);
+        } else {
+            this.img.src = tripConfig.frames[frame];
+        }
+    }, tripConfig.interval);
+  }
+
+  // continue normal actions after fall
+  resumeAfterFallen() {
+    if(this.isDragging) return;
+    this.isFalling = false;
+    this.isPetting = false;
+    this.resetAnimation();
+    this.lastTime = performance.now();
+    this.currentAction = 'sit';
+    this.setNextAction();
+    this.animationFrameId = requestAnimationFrame(this.animate);
+  }
+
+  // action selection and animation --------------------------------------------------
+  // pick next action based on edge, jump chance, or forced actions
+  // If on an edge choose edge behavior -> Random chance to jump -> Forced walk / forced think -> Pick next action from shuffled list
+  setNextAction() {
+    if (this.isDragging || this.isFalling ) return;
+
+    this.resetAnimation();
+
+    if (['top', 'left', 'right'].includes(this.currentEdge)) {
+        this.edgeAction();
+        return;
+    }
+
+    if (!this.isJumping && this.positionY >= window.innerHeight - this.containerHeight) {
+      if (Math.random() < this.spriteConfig.JUMP_CHANCE) { // decicion on wether to jump or not
+        const edges = ['top', 'left', 'right']
+          .filter(e => this.spriteConfig.ALLOWANCES.includes(e));
+
+        if (edges.length) {
+          const target = edges[Math.floor(Math.random() * edges.length)]; // random coordinate on edge
+          this.jumpToEdge(target);
+          return;
+        }
+      }
+    }
+
+    if (this.forceWalkAfter) {
+      this.forceWalkAfter = false;
+      this.startForcedWalk();
+      return;
+    }
+
+    if (this.forceThinkAfter) {
+      this.forceThinkAfter = false;
+      this.startForceThink();
+      return;
+    }
+
+    this.currentActionIndex++;
+    if (this.currentActionIndex >= this.actionSequence.length) {
+      this.currentActionIndex = 0;
+      this.actionSequence = this.shuffle([...this.spriteConfig.ORIGINAL_ACTIONS]);
+    }
+
+    this.currentAction = this.actionSequence[this.currentActionIndex];
+    this.startAction(this.currentAction);
+  }
+
+  // force walk for a number of cycles
+  startForcedWalk() {
+    const { frames, interval } = this.spriteConfig.walk;
+    const walkCycles = this.spriteConfig.forcewalk;
+    this.currentAction = 'forced-walk';
+    this.playAnimation(frames, interval, walkCycles, () => this.setNextAction());
+  }
+
+  // force think for a number of cycles
+  startForceThink() {
+    const { frames, interval, loops } = this.spriteConfig.forcethink;
+    this.currentAction = 'force-think';
+    this.playAnimation(frames, interval, loops, () => this.setNextAction());
+  }
+
+  // pet animation loop
+  startPetAnimation() {
+    this.resetAnimation();
+
+    const petConfig = this.spriteConfig.pet;
+    if (!petConfig) return;
+
+    this.currentAction = 'pet';
+    let frame = 0;
+    this.img.src = petConfig.frames[0];
+
+    this.frameTimer = setInterval(() => {
+      frame = (frame + 1) % petConfig.frames.length;
+      this.img.src = petConfig.frames[frame];
+    }, petConfig.interval);
+  }
+
+  // stop pet animation
+  stopPetAnimation() {
+    this.resetAnimation();
+    this.currentAction = this.wasActionBeforePet || 'sit';
+    this.wasActionBeforePet = null;
+    this.setNextAction();
+  }
+
+  // start a given action (handles direction, frames, loops, and special cases)
+  startAction(action) {  
+    if (this.isDragging || this.isFalling ) return;
+    this.currentAction = action;
+    this.resetAnimation();
+
+    if (action === 'climbTop') {
+      this.direction = Math.random() < 0.5 ? -1 : 1;
+      this.updateImageDirection();
+    }
+    if (action === 'climbSide') {
+      this.direction = Math.random() < 0.5 ? -1 : 1;
+    }
+    if (this.isJumping) {
+      this.animationFrameId = requestAnimationFrame(this.animate);
+      return;
+    }
+
+    const config = this.spriteConfig[action];
+    if (!config) return;
+
+    const { frames, interval, loops = 1 } = config;
+
+    if (action === 'sit' || action === 'hangstillSide' || action === 'hangstillTop') {
+      const duration = config.randomizeDuration
+        ? Math.random() * (config.max - config.min) + config.min
+        : interval * loops;
+      this.img.src = frames[0];
+      this.actionCompletionTimer = setTimeout(() => {
+        this.forceWalkAfter = true;
+        this.setNextAction();
+      }, duration);
+      return;
+    }
+
+    this.playAnimation(frames, interval, loops, () => {
+      if (action === 'spin') {
+        this.direction *= -1;
+        this.facing = this.facing === 'left' ? 'right' : 'left';
+        this.updateImageDirection();
+      }
+
+      // force-actions can be set here
+      if (['trip', 'spin'].includes(action)) this.forceWalkAfter = true;
+      if (action === 'dance') this.forceThinkAfter = true;
+
+      this.setNextAction();
+    });
+  }
+
+  // helper to play a sequence of frames for a given number of loops
+  playAnimation(frames, interval, loops, onComplete){
+    let playCount=0, f=0;
+    this.currentFrame=0;
+    this.img.src=frames[0];
+    if(this.frameTimer) clearInterval(this.frameTimer);
+
+    this.frameTimer=setInterval(()=>{
+        this.currentFrame=f=(f+1)%frames.length;
+        this.img.src=frames[f];
+        if(f===frames.length-1 && ++playCount>=loops){
+            clearInterval(this.frameTimer);
+            this.frameTimer=null;
+            this.currentAction=null;
+            this.actionCompletionTimer=setTimeout(onComplete,0);
+        }
+    }, interval);
+  }
+
+  // main animation loop --------------------------------------------------
+  animate(time) {
+    if (!this.lastTime) this.lastTime = time;
+    const delta = (time - this.lastTime) / 1000;
+    this.lastTime = time;
+    if (this.isDragging || this.isFalling) {
+        this.animationFrameId = requestAnimationFrame(this.animate);
+        return;
+    }
+    const movingActions = ['walk', 'forced-walk', 'climbTop']; // add actions with horizontal movement here
+    if (movingActions.includes(this.currentAction)) {
+        const dx = this.direction * this.spriteConfig.walkspeed * delta;
+        this.positionX += dx;
+        this.setFacingFromDelta(dx);
+
+        // flips sprites and movement direction upon reaching a wall
+        if (this.positionX <= 0) {
+            this.positionX = 0;
+            this.direction = 1;
+            this.facing = 'right';
+            this.updateImageDirection();
+        } else if (this.positionX >= this.maxPos) {
+            this.positionX = this.maxPos;
+            this.direction = -1;
+            this.facing = 'left';
+            this.updateImageDirection();
+        }
+        this.applyEdgeOffset();
+    }
+
+    if (this.currentAction === 'climbSide') {
+      this.positionY += this.direction * this.spriteConfig.walkspeed * delta;
+
+      if (this.currentEdge === 'left') {
+        this.facing = 'left';
+      } else if (this.currentEdge === 'right') {
+        this.facing = 'right';
+      }
+      this.updateImageDirection();
+
+      // flips sprites and movement direction upon reaching a wall
+      const maxY = window.innerHeight - this.containerHeight;
+      if (this.positionY <= 0) {
+        this.positionY = 0;
+        this.direction = 1;
+      } else if (this.positionY >= maxY) {
+        this.positionY = maxY;
+        this.direction = -1;
+      }
+      this.applyEdgeOffset();
+    }
+    this.animationFrameId = requestAnimationFrame(this.animate);
+  }
+}
+</script>
+
+  <center>
+    <div class="meface">
+    <img src="img/nggyu.gif" height="300" width="300">
+    </div>
+      <p><h2>THIS PAGE IS CONSTANTLY</h2></p>
+      <br>
+      <br>
+      <img src="img/construct.gif">
+      <br>
+      <br>
+      <p><marquee scrollamount="15"><span class="webmaster">Please be patient as the webmaster is a lazybones and refuses to work for minimum praise.</marquee></span></p>
+      <br>
+      <br>
+      <p><h2>YOUTUBE VIDEO OF THE MOMENT</h2></p>
+      <br>
+      <iframe width="490" height="315"
+src="https://www.youtube.com/embed/5ohakQ9DE-c">
+</iframe>
+<br>
+<br>
+       <script src="https://yellowbrickring.com/widget.js" defer></script>
+      <webring-widget site-id="theteachuggingcoder.neocities.com"></webring-widget>
+      <br>
+      <br>
+      <p><img src="img/bluefirediv.gif"></p>
+      <p><h1>UPDATES!!!!!!</h1></p>
+      <p><img src="img/bluefirediv.gif"></p>
+      <br>
+      <br>
+      <ul class="updater">
+         <li><img src="img/update.gif">Made a cool song (click it i dare you)!</li>
+         <li>
+         <style>
+    .title-bar {
+        background:linear-gradient(90deg, purple, orchid, pink);
+    }
+ 
+    .player {
+        width:fit-content;
+        border: black solid 1px;
+        border-width: 1px 0px 0px 1px;
+        margin-left:auto;
+        margin-right:auto;
+    }
+ 
+    .controlimg:hover {
+        cursor:help;
+    }
+</style>
+ 
+<!-- below is styling to get windows 98 effect. from 98.css [https://jdan.github.io/98.css/] --> 
+<style>
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  background: transparent;
+}
+ 
+input[type="range"]:focus {
+  outline: none;
+}
+ 
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 21px;
+  width: 11px;
+  background: svg-load("https://raw.githubusercontent.com/jdan/98.css/main/icon/indicator-horizontal.svg");
+  transform: translateY(-8px);
+  box-shadow: none;
+  border: none;
+}
+ 
+input[type="range"].has-box-indicator::-webkit-slider-thumb {
+  background: svg-load("https://raw.githubusercontent.com/jdan/98.css/main/icon/indicator-rectangle-horizontal.svg");
+  transform: translateY(-10px);
+}
+ 
+input[type="range"]::-moz-range-thumb {
+  height: 21px;
+  width: 11px;
+  border: 0;
+  border-radius: 0;
+  background: svg-load("https://raw.githubusercontent.com/jdan/98.css/main/icon/indicator-horizontal.svg");
+  transform: translateY(2px);
+}
+ 
+input[type="range"]::-moz-range-thumb {
+  background: url("https://raw.githubusercontent.com/jdan/98.css/main/icon/indicator-horizontal.svg");
+  border: 0;
+  border-radius: 0;
+  height: 21px;
+  transform: translateY(2px);
+  width: 11px;
+  }
+ 
+input[type="range"].has-box-indicator::-moz-range-thumb {
+  background: svg-load("https://raw.githubusercontent.com/jdan/98.css/main/icon/indicator-rectangle-horizontal.svg");
+  transform: translateY(0px);
+}
+ 
+input[type="range"]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 2px;
+  box-sizing: border-box;
+  background: black;
+  border-right: 1px solid grey;
+  border-bottom: 1px solid grey;
+  box-shadow: 1px 0 0 white, 1px 1px 0 white, 0 1px 0 white, -1px 0 0 darkgrey,
+    -1px -1px 0 darkgrey, 0 -1px 0 darkgrey, -1px 1px 0 white, 1px -1px darkgrey;
+}
+ 
+input[type="range"]::-moz-range-track {
+  width: 100%;
+  height: 2px;
+  box-sizing: border-box;
+  background: black;
+  border-right: 1px solid grey;
+  border-bottom: 1px solid grey;
+  box-shadow: 1px 0 0 white, 1px 1px 0 white, 0 1px 0 white, -1px 0 0 darkgrey,
+    -1px -1px 0 darkgrey, 0 -1px 0 darkgrey, -1px 1px 0 white, 1px -1px darkgrey;
+}
+ 
+button,input,label,option,select,table,textarea,ul.tree-view{-webkit-font-smoothing:none;font-family:"Pixelated MS Sans Serif",Arial;font-size:11px}h1{font-size:5rem}h2{font-size:2.5rem}h3{font-size:2rem}h4{font-size:1.5rem}u{border-bottom:.5px solid #222;text-decoration:none}button,input[type=reset],input[type=submit]{border:none;border-radius:0;box-sizing:border-box;color:transparent;min-height:23px;min-width:75px;padding:0 12px;text-shadow:0 0 #222}.vertical-bar,button,input[type=reset],input[type=submit]{background:silver;box-shadow:inset -1px -1px #0a0a0a,inset 1px 1px #fff,inset -2px -2px grey,inset 2px 2px #dfdfdf}.vertical-bar{height:20px;width:4px}button:not(:disabled):active,input[type=reset]:not(:disabled):active,input[type=submit]:not(:disabled):active{box-shadow:inset -1px -1px #fff,inset 1px 1px #0a0a0a,inset -2px -2px #dfdfdf,inset 2px 2px grey;text-shadow:1px 1px #222}@media (not(hover)){button:not(:disabled):hover,input[type=reset]:not(:disabled):hover,input[type=submit]:not(:disabled):hover{box-shadow:inset -1px -1px #fff,inset 1px 1px #0a0a0a,inset -2px -2px #dfdfdf,inset 2px 2px grey}}button:focus,input[type=reset]:focus,input[type=submit]:focus{outline:1px dotted #000;outline-offset:-4px}button::-moz-focus-inner,input[type=reset]::-moz-focus-inner,input[type=submit]::-moz-focus-inner{border:0}:disabled,:disabled+label,input[readonly],input[readonly]+label{color:grey}:disabled+label,button:disabled,input[type=reset]:disabled,input[type=submit]:disabled{text-shadow:1px 1px 0 #fff}}
+ 
+.title-bar-controls button {border:none;border-radius:0;box-sizing:border-box;color:transparent;min-height:23px;min-width:75px;padding:0 12px;text-shadow:0 0 #222}
+ 
+.title-bar-controls button {background:silver;box-shadow:inset -1px -1px #0a0a0a,inset 1px 1px #fff,inset -2px -2px grey,inset 2px 2px #dfdfdf}
+ 
+.title-bar-controls button:not(:disabled):active {box-shadow:inset -1px -1px #fff,inset 1px 1px #0a0a0a,inset -2px -2px #dfdfdf,inset 2px 2px grey;text-shadow:1px 1px #222}
+ 
+@media (not(hover)){
+	button:not(:disabled):hover {
+    box-shadow:inset -1px -1px #fff,inset 1px 1px #0a0a0a,inset -2px -2px #dfdfdf,inset 2px 2px grey}
+}
+ 
+.title-bar-controls button:focus {outline:1px dotted #000; outline-offset:-4px}
+.title-bar-controls button::-moz-focus-inner {border:0}
+ 
+ 
+@font-face {
+  font-family: "Pixelated MS Sans Serif";
+  src: url("https://files.catbox.moe/1za99g.woff") format("woff");
+  src: url("https://files.catbox.moe/8fwbkl.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
+ 
+@font-face {
+  font-family: "Pixelated MS Sans Serif";
+  src: url("https://files.catbox.moe/z7csle.woff") format("woff");
+  src: url("https://files.catbox.moe/moqhx6.woff2") format("woff2");
+  font-weight: bold;
+  font-style: normal;
+}
+ 
+ 
+.window, .title-bar {
+  font-family: "Pixelated MS Sans Serif", Arial;
+  -webkit-font-smoothing: none;
+  font-size: 11px;
+}
+ 
+.window {
+  box-shadow: inset -1px -1px #0a0a0a,
+    inset 1px 1px #dfdfdf, inset -2px -2px #808080,
+    inset 2px 2px #ffffff;
+  background: #c0c0c0;
+  padding: 3px;
+  width:260px;
+}
+ 
+.title-bar {
+  padding: 3px 2px 3px 3px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+ 
+.title-bar-text {
+  font-weight: bold;
+  color: white;
+  letter-spacing: 0;
+  margin-right: 24px;
+}
+ 
+.title-bar-controls {
+  display: flex;
+}
+ 
+.title-bar-controls button {
+  padding: 0;
+  display: block;
+  min-width: 16px;
+  min-height: 14px;
+}
+ 
+.title-bar-controls button:active {
+  padding: 0;
+}
+ 
+.title-bar-controls button:focus {
+  outline: none;
+}
+ 
+.title-bar-controls button[aria-label=Minimize]{
+background-image:url("https://raw.githubusercontent.com/jdan/98.css/main/icon/minimize.svg");
+background-position:bottom 3px left 4px;
+background-repeat:no-repeat}
+ 
+.title-bar-controls button[aria-label=Maximize]{
+background-image:url("https://raw.githubusercontent.com/jdan/98.css/4a2282dd9170cabf730fb5803d1153d86b2e94e3/icon/maximize.svg");
+background-position:top 2px left 3px;
+background-repeat:no-repeat}
+ 
+.title-bar-controls button[aria-label=Close]{
+background-image:url("https://raw.githubusercontent.com/jdan/98.css/main/icon/close.svg");
+background-position:top 3px left 4px;
+background-repeat:no-repeat;
+margin-left:2px}
+ 
+.window-body { margin:0px; height:98px; }
+ 
+ 
+ 
+input[type=range] {
+        -webkit-appearance: none;
+        appearance:none;
+        width: 100%;
+    }
+ 
+    input[type=range]:focus {
+        outline: none;
+    }
+ 
+    /* settings for chrome browsers */
+    input[type=range]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 2px; /* thickness of seeking track */
+        cursor: help;
+    }
+ 
+ 
+    /* settings for firefox browsers */
+    input[type=range]::-moz-range-track {
+        width: 100%;
+        height: 2px; /* thickness of seeking track */
+        cursor: help;
+    }
+ 
+    .flex {display: flex;}
+ 
+    .titlebaricon { height:14px; width:14px;}
+ 
+ 
+    .songtitlewindow {
+        background-color:#fff;
+        box-shadow:inset -1px -1px #fff,inset 1px 1px grey,inset -2px -2px #dfdfdf,inset 2px 2px #0a0a0a;
+    }
+ 
+    #musicplayer {
+        border:2px solid silver; /* border around player */
+        border-width: 2px 0px 0px 0px;
+        width:160px; /* width of the player */
+    }
+ 
+    #imagestyle {
+        background:silver; /* background color of player */
+        border:2px solid silver; /* border around player */
+        width:95px; /* width of the player */
+        height:95px;
+        box-shadow:inset -1px -1px #fff,inset 1px 1px grey,inset -2px -2px #dfdfdf,inset 2px 2px #0a0a0a;
+    }
+ 
+    .ic {
+    	width:90px;
+        position:relative;
+        bottom:1px;
+        right:1px;
+        overflow:hidden;
+        padding:2px;
+        border:2px solid transparent;
+    }
+ 
+    .songtitlearrow {
+        background-size:100%;
+        background-repeat:no-repeat;
+        background-image:url(https://files.catbox.moe/f5e8np.png);
+        height:21px;
+        width:21px;
+        position:relative;
+        top:2px;
+        left:-2px;
+        border:0px solid transparent;
+        border-width:0px 0px 0px 0px;
+    }
+ 
+    .songtitle {
+        padding:5px; /* padding around song title */
+        border-bottom:0px; /* border under song title */
+        display:block;
+        font-family:Pixelated MS Sans Serif;
+    }
+ 
+    .controls {
+        font-size:18px !important; /* size of controls */
+        text-align:center;
+        width:100%;
+        position:relative;
+        bottom:10px;
+    }
+ 
+    .controls td {
+        padding:8px 5px 0px 5px; /* padding around controls */
+    }
+ 
+    button {
+        min-width:40px;
+    }
+ 
+    .seeking {
+        background-color:#c0c0c0; /* background color of seeking bar */
+        display:flex;
+        justify-content: space-evenly;
+        padding:14px; /* padding around seeking bar */
+    }
+ 
+    .current-time {
+        padding-right:5px;
+    }
+ 
+    .total-duration {
+        padding-left:5px;
+    }
+ 
+    .controlimg {
+    height:15px;
+    width:15px;
+    }
+</style>
+</head>
+<body>
+<div class="player">
+<div class="window">
+  <div class="title-bar">
+    <div class="title-bar-text"><sub><img class="titlebaricon" src="https://files.catbox.moe/tg55zp.png" alt="cd player icon"></sub> CD player</div>
+    <div class="title-bar-controls">
+      <button aria-label="Minimize"></button>
+      <button aria-label="Maximize"></button>
+      <button aria-label="Close"></button>
+    </div>
+  </div>
+  <div class="window-body">
+    <div class="flex">
+<div id="imagestyle"><img class="ic" src="https://files.catbox.moe/sjxzqw.jpg" alt="momo icon"></div>
+    <div id="musicplayer">
+        <div class="songtitlewindow">
+            <div class="flex"><marquee scrollamount="4" class="songtitle"></marquee><div class="songtitlearrow"></div></div>
+        </div>
+ 
+ <div class="seeking">
+            <div class="current-time">00:00</div>
+ 
+            <input type="range" min="1" max="100" value="0" class="seek_slider" onchange="seekTo()">
+ 
+            <div class="total-duration">0:00</div>
+        </div>
+ 
+        <table class="controls">
+            <tr>
+                <td>
+                    <div class="prev-track" onclick="prevTrack()"><button><img src="https://files.catbox.moe/hhoh1h.png" class="controlimg"></button></div>
+                </td>
+                <td>
+                    <div class="playpause-track" onclick="playpauseTrack()" ><button><img src="https://files.catbox.moe/w93riq.png" class="controlimg"></button></div>
+                </td>
+                <td>
+                    <div class="next-track" onclick="nextTrack()"><button><img src="https://files.catbox.moe/p4q9gf.png" class="controlimg"></button></div>
+                </td>
+            </tr>
+        </table>
+ 
+        <audio id="music" src=""></audio> 
+    </div>
+    </div>
+  </div>
+</div>
+    </div>
+</body>
+ 
+<script>
+        // initiate variables
+        let track_name = document.querySelector(".songtitle");
+ 
+        let playpause_btn = document.querySelector(".playpause-track");
+        let next_btn = document.querySelector(".next-track");
+        let prev_btn = document.querySelector(".prev-track");
+ 
+        let seek_slider = document.querySelector(".seek_slider");
+        let curr_time = document.querySelector(".current-time");
+        let total_duration = document.querySelector(".total-duration");
+ 
+        let track_index = 0;
+        let isPlaying = false;
+        let updateTimer;
+ 
+        // create new audio element
+        let curr_track = document.getElementById("music");
+ 
+        //
+        // DEFINE YOUR SONGS HERE!!!!!
+        // MORE THAN FOUR SONGS CAN BE ADDED!!
+        // JUST ADD ANOTHER BRACKET WITH NAME AND PATH
+        // CATBOX.MOE IS RECOMMENDED FOR UPLOADING MP3 FILES
+        let track_list = [
+            {
+                name:"Never Gonna Give You Up - Rick Astley",
+                path:"https://files.catbox.moe/koqkq5.mp3"
+            },
+            
+        ];
+        //
+        //
+        //
+        //
+        //
+ 
+        function loadTrack(track_index) {
+            clearInterval(updateTimer);
+            resetValues();
+ 
+            // load a new track
+            curr_track.src = track_list[track_index].path;
+            curr_track.load();
+ 
+            // update details of the track
+            track_name.textContent = "playing " + (track_index + 1) + " of " + track_list.length + ": " + track_list[track_index].name;
+ 
+            // set an interval of 1000 milliseconds for updating the seek slider
+            updateTimer = setInterval(seekUpdate, 1000);
+ 
+            // move to the next track if the current one finishes playing 
+            curr_track.addEventListener("ended", nextTrack);
+        }
+ 
+        // reset values
+        function resetValues() {
+            curr_time.textContent = "0:00";
+            total_duration.textContent = "0:00";
+            seek_slider.value = 0;
+        }
+ 
+        // checks if song is playing
+        function playpauseTrack() {
+            if (!isPlaying) playTrack();
+            else pauseTrack();
+        }
+ 
+        // plays track when play button is pressed
+        function playTrack() {
+            curr_track.play();
+            isPlaying = true;
+ 
+            // replace icon with the pause icon
+            playpause_btn.innerHTML = '<button><img src="https://files.catbox.moe/njer0s.png" class="controlimg"></i></button>';
+        }
+ 
+        // pauses track when pause button is pressed
+        function pauseTrack() {
+            curr_track.pause();
+            isPlaying = false;
+ 
+            // replace icon with the play icon
+            playpause_btn.innerHTML = '<button><img src="https://files.catbox.moe/w93riq.png" class="controlimg"></button>';
+        }
+ 
+        // moves to the next track
+        function nextTrack() {
+            if (track_index < track_list.length - 1)
+                track_index += 1;
+            else track_index = 0;
+            loadTrack(track_index);
+            playTrack();
+        }
+ 
+        // moves to the previous track
+        function prevTrack() {
+            if (track_index > 0)
+                track_index -= 1;
+            else track_index = track_list.length;
+            loadTrack(track_index);
+            playTrack();
+        }
+ 
+        // seeker slider
+        function seekTo() {
+            seekto = curr_track.duration * (seek_slider.value / 100);
+            curr_track.currentTime = seekto;
+        }
+ 
+        function seekUpdate() {
+            let seekPosition = 0;
+ 
+            // check if the current track duration is a legible number
+            if (!isNaN(curr_track.duration)) {
+                seekPosition = curr_track.currentTime * (100 / curr_track.duration);
+                seek_slider.value = seekPosition;
+ 
+            // calculate the time left and the total duration
+            let currentMinutes = Math.floor(curr_track.currentTime / 60);
+            let currentSeconds = Math.floor(curr_track.currentTime - currentMinutes * 60);
+            let durationMinutes = Math.floor(curr_track.duration / 60);
+            let durationSeconds = Math.floor(curr_track.duration - durationMinutes * 60);
+ 
+            // adding a zero to the single digit time values
+            if (currentSeconds < 10) { currentSeconds = "0" + currentSeconds; }
+            if (durationSeconds < 10) { durationSeconds = "0" + durationSeconds; }
+            if (currentMinutes < 10) { currentMinutes = currentMinutes; }
+            if (durationMinutes < 10) { durationMinutes = durationMinutes; }
+ 
+            curr_time.textContent = currentMinutes + ":" + currentSeconds;
+            total_duration.textContent = durationMinutes + ":" + durationSeconds;
+          }
+        }
+ 
+        // load the first track in the tracklist
+        loadTrack(track_index);
+    </script>
+         </li>
+        <li><img src="img/update.gif">   Created an animated 88x33 button for other sites to link to :D! See the buttons on the nav bar!</li>
+        <li><img src="img/update.gif">   PAGE COUNTER IS UP! Now you know which visitor number you are. If you are the 1 millionth, you get a free hug!</li></div>
+        <li><img src="img/update.gif">   The  <a href="https://theteachuggingcoder.neocities.org/blog.html target="C">Blog</a>  has been
+        updated with the final look-and-feel.</li>
+       <li><img src="img/bullet.gif" height="20px">   MOAR BANNERS! Each time the page is refreshed, the banner is selected at random from 
+        a pool of about 20.</li>
+        <li><img src="img/bullet.gif" height="20px">   The advertisements at the bottom of the page are randomly swapped out every 30 seconds.</li></div>
+       <li><img src="img/bullet.gif" height="20px">   New blog post! This thing needs updating tho. Will get around to that eventually.</li></div>
+        <li><img src="img/bullet.gif" height="20px">   If you try and find a page that doesn't exist, there is a neat little page built for it.  <a href="https://theteachuggingcoder.neocities.org/apagethatdoesntexist" target="_blank">Try it!</a></li></d
+      </ul>
+      <br>
+      <br>
+      <br>
+  <p>YOU ARE VISITOR NUMBER</p>
+    <p><img src="https://mbo-neocities_hit_counter.web.val.run?sitename=theteachuggingcoder" alt="Hit count" />          </p>
+</center>
+  
+  </body>
+</html>

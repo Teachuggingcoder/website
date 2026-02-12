@@ -1,0 +1,220 @@
+       body *::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+  background: none;
+}
+
+body *::-webkit-scrollbar-thumb, body *::-webkit-scrollbar-button {
+  width: 16px;
+  height: 16px;
+  background: silver;
+  box-shadow: inset 1px 1px #dfdfdf, inset -1px -1px gray;
+  border: 1px solid;
+  border-color: silver #000 #000 silver;
+}
+
+body *::-webkit-scrollbar-track {
+  image-rendering: optimizeSpeed;
+  image-rendering: pixelated;
+  image-rendering: optimize-contrast;
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgLTAuNSAyIDIiIHNoYXBlLXJlbmRlcmluZz0iY3Jpc3BFZGdlcyI+CjxtZXRhZGF0YT5NYWRlIHdpdGggUGl4ZWxzIHRvIFN2ZyBodHRwczovL2NvZGVwZW4uaW8vc2hzaGF3L3Blbi9YYnh2Tmo8L21ldGFkYXRhPgo8cGF0aCBzdHJva2U9IiNjMGMwYzAiIGQ9Ik0wIDBoMU0xIDFoMSIgLz4KPC9zdmc+");
+  background-position: 0 0;
+  background-repeat: repeat;
+  background-size: 2px;
+}
+
+body *::-webkit-scrollbar-button {
+  background-repeat: no-repeat;
+  background-size: 16px;
+}
+
+body *::-webkit-scrollbar-button:single-button:vertical:decrement {
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgLTAuNSAxNiAxNiIgc2hhcGUtcmVuZGVyaW5nPSJjcmlzcEVkZ2VzIj4KPG1ldGFkYXRhPk1hZGUgd2l0aCBQaXhlbHMgdG8gU3ZnIGh0dHBzOi8vY29kZXBlbi5pby9zaHNoYXcvcGVuL1hieHZOajwvbWV0YWRhdGE+CjxwYXRoIHN0cm9rZT0iIzAwMDAwMCIgZD0iTTcgNWgxTTYgNmgzTTUgN2g1TTQgOGg3IiAvPgo8L3N2Zz4=");
+}
+
+body *::-webkit-scrollbar-button:single-button:vertical:increment {
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgLTAuNSAxNiAxNiIgc2hhcGUtcmVuZGVyaW5nPSJjcmlzcEVkZ2VzIj4KPG1ldGFkYXRhPk1hZGUgd2l0aCBQaXhlbHMgdG8gU3ZnIGh0dHBzOi8vY29kZXBlbi5pby9zaHNoYXcvcGVuL1hieHZOajwvbWV0YWRhdGE+CjxwYXRoIHN0cm9rZT0iIzAwMDAwMCIgZD0iTTQgNWg3TTUgNmg1TTYgN2gzTTcgOGgxIiAvPgo8L3N2Zz4=");
+}
+
+body *::-webkit-scrollbar-button:single-button:horizontal:decrement {
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgLTAuNSAxNiAxNiIgc2hhcGUtcmVuZGVyaW5nPSJjcmlzcEVkZ2VzIj4KPG1ldGFkYXRhPk1hZGUgd2l0aCBQaXhlbHMgdG8gU3ZnIGh0dHBzOi8vY29kZXBlbi5pby9zaHNoYXcvcGVuL1hieHZOajwvbWV0YWRhdGE+CjxwYXRoIHN0cm9rZT0iIzAwMDAwMCIgZD0iTTggM2gxTTcgNGgyTTYgNWgzTTUgNmg0TTYgN2gzTTcgOGgyTTggOWgxIiAvPgo8L3N2Zz4=");
+}
+
+body *::-webkit-scrollbar-button:single-button:horizontal:increment {
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgLTAuNSAxNiAxNiIgc2hhcGUtcmVuZGVyaW5nPSJjcmlzcEVkZ2VzIj4KPG1ldGFkYXRhPk1hZGUgd2l0aCBQaXhlbHMgdG8gU3ZnIGh0dHBzOi8vY29kZXBlbi5pby9zaHNoYXcvcGVuL1hieHZOajwvbWV0YWRhdGE+CjxwYXRoIHN0cm9rZT0iIzAwMDAwMCIgZD0iTTYgM2gxTTYgNGgyTTYgNWgzTTYgNmg0TTYgN2gzTTYgOGgyTTYgOWgxIiAvPgo8L3N2Zz4=");
+}
+
+body *::-webkit-scrollbar-corner {
+  background: silver;
+}
+
+/* dakedres was here ;3 */
+body {
+  background-image: url("img/sbkg.gif");
+  background-repeat: repeat;
+  color: white;
+  font-family: "Comic Sans MS", "Comic Sans", Times, cursive;
+  font-size: medium;
+  cursor: url('img/cursor.cur'), auto;
+}
+
+a {
+  font-size: x-large;
+  font-family: 'Times New Roman', Times, serif;
+  color: red;
+}
+
+a:visited{
+  color: maroon;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+p {
+  margin-bottom: 0px;
+  margin-top: 0px;
+}
+
+.minis {
+  margin-top: 30px;
+}
+
+table {
+	text-align: center;
+}
+
+table td {
+	padding-left: 10px;
+	padding-top: 15px;
+}
+/*
+Source - https://stackoverflow.com/a
+Posted by Titus, modified by community. See post 'Timeline' for change history
+Retrieved 2026-01-25, License - CC BY-SA 3.0
+*/
+
+    .codebox {
+        /* Below are styles for the codebox (not the code itself) */
+        border:1px solid black;
+        background-color:solid black;
+        width:200px;
+        overflow:auto;    
+        padding:10px;
+    }
+    .codebox code {
+        /* Styles in here affect the text of the codebox */
+        font-size:0.9em;
+        /* You could also put all sorts of styling here, like different font, color, underline, etc. for the code. */
+    }
+
+body {
+      cursor: url('https://files.catbox.moe/u23epk.ani'), progress;
+      cursor: url('https://files.catbox.moe/t59279.cur'), default;
+      cursor: url('https://files.catbox.moe/1wjb6d.cur'), move;
+      cursor: url('https://files.catbox.moe/5pcz3g.ani'), wait;
+      cursor: url('https://files.catbox.moe/cg6hvq.cur'), pointer;
+      cursor: url('https://files.catbox.moe/hux9j2.cur'), text;
+      
+      cursor: url('https://files.catbox.moe/t59279.cur'), auto;
+     
+}
+ @keyframes flicker {
+0% {
+opacity: 0.27861;
+}
+5% {
+opacity: 0.34769;
+}
+10% {
+opacity: 0.23604;
+}
+15% {
+opacity: 0.90626;
+}
+20% {
+opacity: 0.18128;
+}
+25% {
+opacity: 0.83891;
+}
+30% {
+opacity: 0.65583;
+}
+35% {
+opacity: 0.67807;
+}
+40% {
+opacity: 0.26559;
+}
+45% {
+opacity: 0.84693;
+}
+50% {
+opacity: 0.96019;
+}
+55% {
+opacity: 0.08594;
+}
+60% {
+opacity: 0.20313;
+}
+65% {
+opacity: 0.71988;
+}
+70% {
+opacity: 0.53455;
+}
+75% {
+opacity: 0.37288;
+}
+80% {
+opacity: 0.71428;
+}
+85% {
+opacity: 0.70419;
+}
+90% {
+opacity: 0.7003;
+}
+95% {
+opacity: 0.36108;
+}
+100% {
+opacity: 0.24387;
+}
+}
+ 
+#wrapper::after {
+content: " ";
+display: block;
+position: absolute;
+top: 0;
+left: 0;
+bottom: 0;
+right: 0;
+background: rgba(18, 16, 16, 0.1);
+opacity: 0;
+z-index: 2;
+pointer-events: none;
+animation: flicker 0.15s infinite;
+}
+#wrapper::before{
+content: " ";
+display: block;
+position: absolute;
+top: 0;
+left: 0;
+bottom: 0;
+right: 0;
+background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+z-index: 2;
+background-size: 100% 2px, 3px 100%;
+pointer-events: none;
+}
+ #tab{position:fixed;width:100px;top:30px;left:30px;z-index:9999999999;}
+#tab .sp{height:14px;width:120px;margin:-17px 0 0 -10px;overflow:hidden;position:absolute;background:url(https://31.media.tumblr.com/89d0a73dbfd39d6e6dfcd157efacf73a/tumblr_inline_nc4ltugMJI1rh7826.png);}
+#tab .nb{width:100px;margin-bottom:20px;padding:5px 10px 5px 10px;background:url(https://31.media.tumblr.com/905e072082d7e170a96e198cf24af6d9/tumblr_inline_nc4ltqDhD21rh7826.png);border:1px solid rgba(0,0,0,0.1);-webkit-border-bottom-right-radius: 6px;-webkit-border-bottom-left-radius: 6px;-moz-border-radius-bottomright: 6px;-moz-border-radius-bottomleft: 6px;border-bottom-right-radius: 6px;border-bottom-left-radius: 6px;z-index:999999;box-shadow:rgba(0,0,0,0.07)5px 5px;font-size:11px;line-height:13px;}
