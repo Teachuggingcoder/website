@@ -2,9 +2,64 @@
 <html>
 <head>
   <script>
-window.onload = function() {
-  alert("WARNING: This content contains flashing lights and may trigger seizures for people with photosensitive epilepsy. Please proceed with caution.");
-};
+// Source - https://stackoverflow.com/a/41167949
+// Posted by Guitaro, modified by community. See post 'Timeline' for change history
+// Retrieved 2026-03-02, License - CC BY-SA 3.0
+
+window.onload = addElement;
+
+
+
+function addElement() {
+  // create a new div element 
+  // and give it popup content 
+  var newDiv = document.createElement("div");
+  var texts = 'erd';
+  newDiv.innerHTML += '<div id="popup" style=" position: absolute;top: 5%;width: 800px;height: 200px;margin: auto;z-index: 99999;display: block;left:25%;background-color: #fff;  border: 1px solid #ddd;  border-radius: 5px;  box-shadow: 0 1px 6px 4px #000;  overflow: hidden;   padding: 10px;"><div class="popup_body" style="  height: 160px;">' + texts + '</div><button style="padding: 10px;" class="close_button"onClick="closePopup()">Sluiten</button><button  style="padding: 10px;" class="close_button"onClick="tostoring()">Meer Informatie</button></div>';
+
+ // Add The Background cover
+  var BG = document.createElement("div");
+  //BG.style.background-color = 'black';
+  BG.style.width = '100%';
+  BG.style.height = '100%';
+  BG.style.background = 'black';
+  BG.style.position = 'fixed';
+  BG.style.top = '0';
+  BG.style.left = '0';
+  BG.style.opacity = '0.9';
+  BG.style.displpay = 'none';
+  BG.setAttribute("id", "bgcover");
+  
+  // add the newly created elements and its content into the DOM 
+document.body.appendChild(BG);
+document.body.insertBefore(newDiv, BG);
+  // open popup onload
+  openPopup();
+}
+
+function openPopup() {
+  var el = document.getElementById('popup');
+  var BG = document.getElementById('bgcover');
+  el.style.display = 'block';
+  BG.style.display = 'block';
+  
+  
+ 
+}
+
+function tostoring() {
+window.location.href = '../testing/storing.php';
+ 
+}
+
+
+
+function closePopup() {
+  var el = document.getElementById('popup');
+  var BG = document.getElementById('bgcover');
+  el.style.display = 'none';
+  BG.style.display = 'none';
+}
 </script>
   <link rel="stylesheet" href="style.css">
   <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
