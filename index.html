@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css">
   <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
   <link rel="icon" href="img/favicon.ico" type="image/x-icon">
-    <script>
+  <meta name="twitter:site" content="@vargnaar">
+  <script type="text/javascript" src="//www.midijs.net/lib/midi.js"> </script>
+  <title>tHe TeA cHuGgInG cOdEr</title>
+  <script>
   
   var space = " ";
   var speed = "60";
   var pos = 0;
-  var msg = "//..TTCC..";
+  var msg = "//..The tea chugging coder ..";
   function Scroll(){
     document.title = msg.substring(pos, msg.length) + space + msg.substring(0,pos);pos++;
     if (pos > msg.length) pos = 0;window.setTimeout("Scroll()", speed);
@@ -20,18 +23,6 @@
   </script>
 </head>
 </body>
-  <dialog id="warning" aria-labelledby="modal-title" aria describedby="modal-desc".>
-    <div class="modal-content">
-      <h2 id="modal-title">Epilepsy Warning</h2>
-      <p id="modal-desc">
-        This page contains flashing imagery that may trigger seizures for the people with photosensitive epilepsy.
-      </p>
-      <div class="modal-actions">
-        <button id="close-modal" class="primary-btn">I understand, continue</button>
-        <button onclick="window.history.back()" class="secondary-btn">Go back</button>
-      </div>
-    </div>
-  </dialog>
 <center>
 <frameset rows="10%,70%,10%" frameBorder="0">
   <frame name="A" src="header.html" frameBorder="0">
