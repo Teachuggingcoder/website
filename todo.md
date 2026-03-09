@@ -7,5 +7,5 @@
 | | Split gallery into sections: Photos + Desgin |
 |✅| More gifs |
 | | Make the gallery display full resolution images onClick |
-| ✅|| Set up old-school guestbook
+| ✅| Set up old-school guestbook
 
