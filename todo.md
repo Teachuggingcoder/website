@@ -1,7 +1,7 @@
 # To Do
 |✅ | The thing to do |
 |:-:|:----------------|
-| | Custom mouse cursor |
+|✅ | Custom mouse cursor |
 |✅| Midi player |
 |✅| Home page information |
 | | Split gallery into sections: Photos + Desgin |
