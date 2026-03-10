@@ -12,10 +12,32 @@
     
     <center>
 		<p>i have watched 27 <img src="https://bettysgraphics.neocities.org/images/gadgets/vhs%20player%202.gif"> this year. Last updated 4/03/2026<img src="img/IRZAZZP7YC6QKSYBMSD222EUUJ74VKT7.gif"></p>
-		
+		<script type="text/javascript">
+
+//
+
+function changeRandomimage() {
+    var imageArray = ["img/XHUESGKAJ2WXTJG63CJBCVPMUMKRUJ7Y.gif", "img/vban1.gif", "img/vban3.jpg"];
+    var randomImage = Math.floor(Math.random() * imageArray.length);
+    document.getElementById("switchme").src = imageArray[randomImage];
+}
+changeRandomimage();
+
+
+// Refresh advert banner every 30 seconds
+
+        setInterval(function(){
+        window.location.reload();
+        }, 30000);
+
+
+
+
+</script>
 	</center>
   </body>
 </html>
+
 
 
 
