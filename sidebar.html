@@ -1099,7 +1099,40 @@ class Creature {
   }
 }
 </script>
+<style>
+	.flashnews_today {
+  margin: 0 auto;
+  white-space: nowrap;
+  overflow: hidden;
+  /*box-sizing: border-box;*/
+  /*border: 1px green solid;*/
+}
 
+.flashnews_today span {
+  display: inline-block;
+  padding-left: 100%;
+  text-indent: 0;
+  /*border: 1px red solid;*/
+  -webkit-animation: flashnews_today 45s linear infinite;
+  animation: flashnews_today 45s linear infinite;
+}
+
+.flashnews_today span:hover {
+  animation-play-state: paused
+}
+
+
+/* Make it move */
+
+@keyframes flashnews_today {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(-100%, 0);
+  }
+}
+	</style>
   <center>
     <div class="meface">
     <img src="img/nggyu.gif" height="300" width="300">
@@ -1110,7 +1143,10 @@ class Creature {
       <img src="img/construct.gif">
       <br>
       <br>
-      <p><marquee scrollamount="15"><span class="webmaster">Please be patient as the webmaster is a lazybones and refuses to work for minimum praise.</marquee></span></p>
+      <p><div class="flashnews_today">
+		  <span class="webmaster">Please be patient as the webmaster is a lazybones and refuses to work for minimum praise.</marquee></span>
+	  </div>
+	  </p>
       <br>
       <br>
       <p><h2>YOUTUBE VIDEO OF THE MOMENT</h2></p>
