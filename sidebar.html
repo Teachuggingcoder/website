@@ -32,10 +32,10 @@
         filter: blur(1.6px) contrast(200%);
       }
 
-    </style>
+    </>
   </head>
   <body>
-      <style>
+      <>
     /* webmeji */
 .webmeji-container {
   position: fixed;
@@ -62,7 +62,7 @@
   }
 }
 
-  </style>
+  </>
 <script>
 
   // ✰ webmeji ✰
@@ -433,23 +433,23 @@ class Creature {
     window.addEventListener('touchend', () => { this.isPointerDown = false; });
 
     // get container size
-    const containerStyle = window.getComputedStyle(this.container);
-    this.containerWidth = parseFloat(containerStyle.width);
-    this.containerHeight = parseFloat(containerStyle.height);
+    const container = window.getComputed(this.container);
+    this.containerWidth = parseFloat(container.width);
+    this.containerHeight = parseFloat(container.height);
 
     // spawn at random bottom position
     this.positionX = Math.random() * (window.innerWidth - this.containerWidth);
     this.positionY = window.innerHeight - this.containerHeight;
 
-    this.container.style.left = `${this.positionX}px`;
-    this.container.style.top = `${this.positionY}px`;
+    this.container..left = `${this.positionX}px`;
+    this.container..top = `${this.positionY}px`;
 
     this.maxPos = window.innerWidth - this.containerWidth; // max horizontal position
     this.forceWalkAfter = false; // flag for forcing walk after some actions
     this.forceThinkAfter = false;
 
-    this.container.style.left = `${this.positionX}px`;
-    this.container.style.top = 'auto'; // reset top for CSS positioning
+    this.container..left = `${this.positionX}px`;
+    this.container..top = 'auto'; // reset top for CSS positioning
     this.baseBottom = 0; // reference for bottom alignment
 
     this.updateImageDirection(); // set initial facing
@@ -464,12 +464,12 @@ class Creature {
 
     // handle window resize to adjust max positions
     this.resizeHandler = () => {
-      const style = window.getComputedStyle(this.container);
-      this.containerWidth = parseFloat(style.width);
-      this.containerHeight = parseFloat(style.height);
+      const  = window.getComputed(this.container);
+      this.containerWidth = parseFloat(.width);
+      this.containerHeight = parseFloat(.height);
       this.maxPos = window.innerWidth - this.containerWidth;
       this.positionX = Math.min(this.positionX, this.maxPos);
-      this.container.style.left = `${this.positionX}px`;
+      this.container..left = `${this.positionX}px`;
     };
     window.addEventListener('resize', this.resizeHandler);
 
@@ -489,7 +489,7 @@ class Creature {
 
   // flip sprite horizontally depending on facing
   updateImageDirection() {
-    this.img.style.transform = this.facing === 'left' ? 'scaleX(1)' : 'scaleX(-1)';
+    this.img..transform = this.facing === 'left' ? 'scaleX(1)' : 'scaleX(-1)';
   }
 
   // update facing from horizontal delta (dx)
@@ -536,14 +536,14 @@ class Creature {
 
   // apply offsets when at edge to align sprite properly
   applyEdgeOffset() {
-      if (this.isDragging) return this.container.style.cssText = `left:${this.positionX}px;top:${this.positionY}px`;
+      if (this.isDragging) return this.container..cssText = `left:${this.positionX}px;top:${this.positionY}px`;
 
       const offsetX = this.currentEdge === 'left' ? -this.containerWidth/2 :
                       this.currentEdge === 'right' ? this.containerHeight/2 : 0;
       const offsetY = this.currentEdge === 'top' ? -this.containerHeight/2 : 0;
 
-      this.container.style.left = `${(this.positionX||0)+offsetX}px`;
-      this.container.style.top  = `${(this.positionY||0)+offsetY}px`;
+      this.container..left = `${(this.positionX||0)+offsetX}px`;
+      this.container..top  = `${(this.positionY||0)+offsetY}px`;
   }
 
   // jump to another edge (top, left, right)
@@ -612,8 +612,8 @@ class Creature {
 
         if (dx !== 0) this.setFacingFromDelta(dx);
 
-        this.container.style.left = `${this.positionX}px`;
-        this.container.style.top = `${this.positionY}px`;
+        this.container..left = `${this.positionX}px`;
+        this.container..top = `${this.positionY}px`;
 
         if (t < 1) {
             requestAnimationFrame(step);
@@ -683,8 +683,8 @@ class Creature {
         this.positionX = Math.max(0, Math.min(this.positionX, window.innerWidth - this.containerWidth));
         this.positionY = Math.max(0, Math.min(this.positionY, window.innerHeight - this.containerHeight));
 
-        this.container.style.left = this.positionX + 'px';
-        this.container.style.top  = this.positionY + 'px';
+        this.container..left = this.positionX + 'px';
+        this.container..top  = this.positionY + 'px';
     };
 
     const onPointerUp = () => {
@@ -730,7 +730,7 @@ class Creature {
     this.isPetting = false;
 
     this.currentAction = 'drag';
-    this.img.style.transform = this.facing === 'left' ? 'scaleX(1)' : 'scaleX(-1)';
+    this.img..transform = this.facing === 'left' ? 'scaleX(1)' : 'scaleX(-1)';
 
     if (this.dragFrameTimer) clearInterval(this.dragFrameTimer);
 
@@ -762,8 +762,8 @@ class Creature {
         this.positionX = Math.max(0, Math.min(this.positionX, window.innerWidth - this.containerWidth));
         this.positionY = Math.max(0, Math.min(this.positionY, window.innerHeight - this.containerHeight));
 
-        this.container.style.left = this.positionX + 'px';
-        this.container.style.top  = this.positionY + 'px';
+        this.container..left = this.positionX + 'px';
+        this.container..top  = this.positionY + 'px';
     };
 
     const onPointerUp = () => {
@@ -816,7 +816,7 @@ class Creature {
     const startY=this.positionY, endY=window.innerHeight-this.containerHeight, distance=endY-startY;
     if(distance<=0){ clearInterval(this.frameTimer); 
       this.frameTimer=null; this.positionY=endY; 
-      this.container.style.top=`${endY}px`; 
+      this.container..top=`${endY}px`; 
       return this.playTripAfterFall(); 
     }
 
@@ -831,7 +831,7 @@ class Creature {
       const elapsed = (time - startTime) / 1000;
       const deltaY = fallSpeed * elapsed;
       this.positionY = Math.min(startY + deltaY, endY); 
-      this.container.style.top = `${this.positionY}px`;
+      this.container..top = `${this.positionY}px`;
 
       if (this.positionY < endY) {
           requestAnimationFrame(step);
@@ -839,7 +839,7 @@ class Creature {
           clearInterval(this.frameTimer);
           this.frameTimer = null;
           this.positionY = endY;
-          this.container.style.top = `${endY}px`;
+          this.container..top = `${endY}px`;
           this.playTripAfterFall();
       }
     };
@@ -1099,7 +1099,7 @@ class Creature {
   }
 }
 </script>
-<style>
+<>
 	.flashnews_today {
   margin: 0 auto;
   white-space: nowrap;
@@ -1117,9 +1117,6 @@ class Creature {
   animation: flashnews_today 45s linear infinite;
 }
 
-.flashnews_today span:hover {
-  animation-play-state: paused
-}
 
 
 /* Make it move */
@@ -1132,7 +1129,7 @@ class Creature {
     transform: translate(-100%, 0);
   }
 }
-	</style>
+	</>
   <center>
     <div class="meface">
     <img src="img/nggyu.gif" height="300" width="300">
@@ -1173,7 +1170,7 @@ src="https://www.youtube.com/embed/IvUU8joBb1Q">
       <ul class="updater">
          <li><img src="img/update.gif">Made a cool song (click it i dare you)!</li>
          <li>
-         <style>
+         <>
     .title-bar {
         background:linear-gradient(90deg, purple, orchid, pink);
     }
