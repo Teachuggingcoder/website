@@ -1220,8 +1220,7 @@ class Creature {
         showSlides(slideIndex); // Next/previous controls 
         function plusSlides(n) { showSlides(slideIndex += n); } function showSlides(n) { var i; var slides = document.getElementsByClassName("mySlides"); if (n > slides.length) { slideIndex = 1 } if (n < 1) { slideIndex = slides.length } for (i = 0; i < slides.length; i++) { slides[i].style.display = "none"; } slides[slideIndex - 1].style.display = "block"; } 
       </script>
-      <button title="Click for the next video!" class="tdsbtn1" loading="lazy" onclick="plusSlides(-1)"></button>
-      <button title="Click for the next video!" class="tdsbtn2" loading="lazy" onclick="plusSlides(1)"></button>
+   
       <div id=&apos;videocontainer&apos; class="modal">
         <div class="modal-content">
           <!--- vid1 -->
@@ -1234,9 +1233,7 @@ class Creature {
     </div>
   </div>
           
-      <iframe width="490" height="315"
-src="https://www.youtube.com/embed/IvUU8joBb1Q">
-</iframe>
+
 <br>
 <br>
        <script src="https://yellowbrickring.com/widget.js" defer></script>
