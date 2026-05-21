@@ -21,3 +21,7 @@
 User-agent: *
 
 Disallow: /
+
+User-agent: noindex, nosnippet
+
+Allow: /
